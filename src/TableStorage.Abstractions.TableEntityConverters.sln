@@ -1,0 +1,28 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 15
+VisualStudioVersion = 15.0.26430.16
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TableStorage.Abstractions.TableEntityConverters", "TableStorage.Abstractions.TableEntityConverters\TableStorage.Abstractions.TableEntityConverters.csproj", "{891284B6-1A51-4824-BDB3-8A83C18235A8}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TableStorage.Abstractions.UnitTests", "TableStorage.Abstractions.UnitTests\TableStorage.Abstractions.UnitTests.csproj", "{FB854D17-D359-4444-AE9F-E0A042420208}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{891284B6-1A51-4824-BDB3-8A83C18235A8}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{891284B6-1A51-4824-BDB3-8A83C18235A8}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{891284B6-1A51-4824-BDB3-8A83C18235A8}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{891284B6-1A51-4824-BDB3-8A83C18235A8}.Release|Any CPU.Build.0 = Release|Any CPU
+		{FB854D17-D359-4444-AE9F-E0A042420208}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{FB854D17-D359-4444-AE9F-E0A042420208}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{FB854D17-D359-4444-AE9F-E0A042420208}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{FB854D17-D359-4444-AE9F-E0A042420208}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal
