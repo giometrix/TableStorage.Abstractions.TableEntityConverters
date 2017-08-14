@@ -25,9 +25,9 @@ namespace TableStorage.Abstractions.UnitTests
                 ExternalId = Guid.Parse("e3bf64f4-0537-495c-b3bf-148259d7ed36"),
                 HireDate = DateTimeOffset.Parse("Thursday, January 31, 2008	")
             };
-            var te = emp.ToTableEntity(e => e.Company, e => e.Id);
+            var tableEntity = emp.ToTableEntity(e => e.Company, e => e.Id);
            
-            Assert.Equal(true, te.Properties.ContainsKey("DepartmentJson"));
+            Assert.Equal(true, tableEntity.Properties.ContainsKey("DepartmentJson"));
         }
 
 
@@ -46,8 +46,8 @@ namespace TableStorage.Abstractions.UnitTests
                 ExternalId = Guid.Parse("e3bf64f4-0537-495c-b3bf-148259d7ed36"),
                 HireDate = DateTimeOffset.Parse("Thursday, January 31, 2008	")
             };
-            var te = emp.ToTableEntity("Google", "42");
-            Assert.Equal("Google", te.PartitionKey);
+            var tableEntity = emp.ToTableEntity("Google", "42");
+            Assert.Equal("Google", tableEntity.PartitionKey);
         }
 
 
@@ -68,8 +68,8 @@ namespace TableStorage.Abstractions.UnitTests
                 ExternalId = Guid.Parse("e3bf64f4-0537-495c-b3bf-148259d7ed36"),
                 HireDate = DateTimeOffset.Parse("Thursday, January 31, 2008	")
             };
-            var te = emp.ToTableEntity(e => e.Company, e => e.Id);
-            var employee = te.FromTableEntity<Employee, string, int>(e => e.Company, e => e.Id);
+            var tableEntity = emp.ToTableEntity(e => e.Company, e => e.Id);
+            var employee = tableEntity.FromTableEntity<Employee, string, int>(e => e.Company, e => e.Id);
             Assert.Equal(Guid.Parse("12ae85a4-7131-4e8c-af63-074b066412e0"), employee.Department.OptionalId);
         }
 
@@ -90,8 +90,8 @@ namespace TableStorage.Abstractions.UnitTests
                 ExternalId = Guid.Parse("e3bf64f4-0537-495c-b3bf-148259d7ed36"),
                 HireDate = DateTimeOffset.Parse("Thursday, January 31, 2008	")
             };
-            var te = emp.ToTableEntity($"company_{emp.Company}", $"employee_{emp.Id}");
-            var employee = te.FromTableEntity<Employee, string, int>(e=>e.Company, pk=>pk.Substring("company_".Length), e => e.Id, rk=>int.Parse(rk.Substring("employee_".Length)));
+            var tableEntity = emp.ToTableEntity($"company_{emp.Company}", $"employee_{emp.Id}");
+            var employee = tableEntity.FromTableEntity<Employee, string, int>(e=>e.Company, pk=>pk.Substring("company_".Length), e => e.Id, rk=>int.Parse(rk.Substring("employee_".Length)));
 
             Assert.Equal(Guid.Parse("12ae85a4-7131-4e8c-af63-074b066412e0"), employee.Department.OptionalId);
         }
