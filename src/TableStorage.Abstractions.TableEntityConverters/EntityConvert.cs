@@ -46,8 +46,19 @@ namespace TableStorage.Abstractions.TableEntityConverters
             Expression<Func<T, object>> partitionProperty,
             Expression<Func<T, object>> rowProperty) where T : new()
         {
-            return FromTableEntity(entity, partitionProperty, p => Convert.ChangeType(entity.PartitionKey, typeof(TP)),
-                rowProperty, p => Convert.ChangeType(entity.RowKey, typeof(TR)));
+            var convertPartition = new Func<string,TP>(p=>(TP)Convert.ChangeType(p, typeof(TP)));
+            var convertRow = new Func<string,TR>(r =>(TR)Convert.ChangeType(r, typeof(TR)));
+
+            if (typeof(TP) == typeof(Guid))
+            {
+                convertPartition = p=>(TP)(object)Guid.Parse(p);
+            }
+            if (typeof(TR) == typeof(Guid))
+            {
+                convertRow = r => (TR)(object)Guid.Parse(r);
+            }
+            return FromTableEntity(entity, partitionProperty, convertPartition,
+                rowProperty, convertRow);
         }
 
         public static T FromTableEntity<T, TP, TR>(this DynamicTableEntity entity,

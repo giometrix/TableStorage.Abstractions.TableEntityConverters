@@ -118,5 +118,26 @@ namespace TableStorage.Abstractions.UnitTests
 
             Assert.Equal(Guid.Parse("12ae85a4-7131-4e8c-af63-074b066412e0"), employee.Department.OptionalId);
         }
+
+        public class GuidKeyTest
+        {
+            public Guid A { get; set; }
+            public Guid B { get; set; }
+        }
+
+        [Fact]
+        public void convert_from_entity_table_with_guid_keys()
+        {
+            Guid a = Guid.Parse("7ba5bd25-823e-4c01-940e-1f131cbed8ed");
+            Guid b = Guid.Parse("603e51de-950e-4270-a755-c26950742103");
+
+            var obj = new GuidKeyTest{A = a, B = b};
+            var e = obj.ToTableEntity(x => x.A, x => x.B);
+            var convertedObject = e.FromTableEntity<GuidKeyTest, Guid, Guid>(x => x.A, x => x.B);
+
+
+            Assert.Equal(a, convertedObject.A);
+
+        }
     }
 }
