@@ -28,10 +28,6 @@ We'll use the following two classes for our examples
     }
     public class Employee
     {
-        public Employee()
-        {
-            
-        }
         public string Company { get; set; }
         public int Id { get; set; }
         public Guid ExternalId { get; set; }
