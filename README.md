@@ -1,4 +1,6 @@
 # TableStorage.Abstractions.TableEntityConverters
+[![Build status](https://ci.appveyor.com/api/projects/status/20rwpny4jfng24ws?svg=true)](https://ci.appveyor.com/project/giometrix/tablestorage-abstractions-tableentityconverters)
+
 Easily convert POCOs (Plain Old CLR Objects) to Azure Table Storage TableEntities and vice versa
 
 The Azure Storage SDK requires that objects that it works with to implement the ITableEntity interface.  This puts us into one of two places that are often not desirable:
