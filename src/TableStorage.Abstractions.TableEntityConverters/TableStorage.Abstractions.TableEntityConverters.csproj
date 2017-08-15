@@ -2,6 +2,12 @@
 
   <PropertyGroup>
     <TargetFramework>netcoreapp1.1</TargetFramework>
+    <Version>1.0.1</Version>
+    <Authors>Giovanni Galbo</Authors>
+    <Company />
+    <Description>Easily convert POCOs (Plain Old CLR Objects) to Azure Table Storage TableEntities and vice versa.  This version is for .net core</Description>
+    <PackageProjectUrl>https://github.com/giometrix/TableStorage.Abstractions.TableEntityConverters</PackageProjectUrl>
+    <PackageTags>table-storage azure-table-storage poco table-entities</PackageTags>
   </PropertyGroup>
 
   <ItemGroup>

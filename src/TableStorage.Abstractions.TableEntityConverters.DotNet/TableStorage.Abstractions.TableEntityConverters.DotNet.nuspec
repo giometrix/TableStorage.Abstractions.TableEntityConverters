@@ -1,0 +1,16 @@
+<?xml version="1.0"?>
+<package >
+  <metadata>
+    <id>$id$</id>
+    <version>$version$</version>
+    <title>TableStorage.Abstractions.TableEntityConverters.DotNet</title>
+    <authors>Giovanni Galbo</authors>
+    <owners>Giovanni Galbo</owners>
+    <projectUrl>https://github.com/giometrix/TableStorage.Abstractions.TableEntityConverters</projectUrl>
+    <requireLicenseAcceptance>false</requireLicenseAcceptance>
+    <description>Easily convert POCOs (Plain Old CLR Objects) to Azure Table Storage TableEntities and vice versa. This version is for the full .net framework.</description>
+    <releaseNotes></releaseNotes>
+    <copyright>Copyright 2017</copyright>
+    <tags>table-storage tablestorage azure-table-storage table-entities poco</tags>
+  </metadata>
+</package>
