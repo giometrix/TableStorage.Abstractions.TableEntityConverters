@@ -38,7 +38,7 @@ We'll use the following two classes for our examples
     }
 ```
 
-## Convert to Table Entity
+## Convert To Table Entity
 Converting to a table entity is easy.  Use the ``.ToTableEntity()`` extension method and specify which properties represent the partition key and row key.  If you need to customize how any of those two keys serialize there are overloads that accept string values.
 
 Example:
@@ -76,7 +76,16 @@ Below is an example that uses string keys instead:
             };
             var tableEntity = emp.ToTableEntity("Google", "42");
 ```
-## Convert from Table Entity
+### Ignoring Properties When Converting To Table Entity
+When converting your POCO to a table entity and ultimately serializing and persisting to Azure Table Storage, you may want to ignore some fields.  To ignore properties, use the optional ```ignoredProperties``` parameter.
+
+Example:
+```csharp
+ var tableEntity = emp.ToTableEntity(e=>e.Company, e=>e.Id, e=>e.ExternalId, e=>e.HireDate);
+```
+In the above example the partition key is ```Company```, the row key is ```Id``` and we ignored ```ExternalId``` and ```HireDate```.
+
+## Convert From Table Entity
 Converting from a table entity is just as simple.  If the both the partition keys can be converted to simple types, you can use the shorter overloaded extension method (```FromTableEntity```).
 
 Here is a simple example where we specify the partition key (```Company```) and the row key (```Id```):
