@@ -149,6 +149,7 @@ namespace TableStorage.Abstractions.UnitTests
             {
                 Company = "Google",
                 Name = "John Smith",
+                Id = 1,
                 Department = new Department
                 {
                     Name = "QA",
@@ -179,7 +180,7 @@ namespace TableStorage.Abstractions.UnitTests
                 ExternalId = Guid.Parse("e3bf64f4-0537-495c-b3bf-148259d7ed36"),
                 HireDate = DateTimeOffset.Parse("Thursday, January 31, 2008	")
             };
-            var tableEntity = emp.ToTableEntity("Google", "42", e => e.Id, e => e.ExternalId, e => e.HireDate);
+            var tableEntity = emp.ToTableEntity("Google", "42", e => e.ExternalId, e => e.HireDate);
             Assert.Equal("Google", tableEntity.PartitionKey);
             Assert.False(tableEntity.Properties.ContainsKey("ExternalId"));
             Assert.False(tableEntity.Properties.ContainsKey("HireDate"));
@@ -193,6 +194,7 @@ namespace TableStorage.Abstractions.UnitTests
             {
                 Company = "Google",
                 Name = "John Smith",
+                Id = 1,
                 Department = new Department
                 {
                     Name = "QA",
