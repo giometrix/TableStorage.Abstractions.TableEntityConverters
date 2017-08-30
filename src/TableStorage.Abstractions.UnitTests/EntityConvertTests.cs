@@ -1,5 +1,6 @@
 ﻿
 using System;
+using System.Collections.Generic;
 using TableStorage.Abstractions.TableEntityConverters;
 using Xunit;
 
@@ -139,5 +140,74 @@ namespace TableStorage.Abstractions.UnitTests
             Assert.Equal(a, convertedObject.A);
 
         }
+
+
+        [Fact]
+        public void convert_to_entity_table_ignore_simple_properties()
+        {
+            var emp = new Employee()
+            {
+                Company = "Google",
+                Name = "John Smith",
+                Department = new Department
+                {
+                    Name = "QA",
+                    Id = 1,
+                    OptionalId = null
+                },
+                ExternalId = Guid.Parse("e3bf64f4-0537-495c-b3bf-148259d7ed36"),
+                HireDate = DateTimeOffset.Parse("Thursday, January 31, 2008	")
+            };
+            var tableEntity = emp.ToTableEntity(e=>e.Company, e=>e.Id, e=>e.ExternalId, e=>e.HireDate);
+            Assert.Equal("Google", tableEntity.PartitionKey);
+            Assert.False(tableEntity.Properties.ContainsKey("ExternalId") );
+            Assert.False(tableEntity.Properties.ContainsKey("HireDate"));
+        }
+
+        [Fact]
+        public void convert_to_entity_table_with_explicit_Keys_with_ignored_simple_properties()
+        {
+            var emp = new Employee()
+            {
+                Name = "John Smith",
+                Department = new Department
+                {
+                    Name = "QA",
+                    Id = 1,
+                    OptionalId = null
+                },
+                ExternalId = Guid.Parse("e3bf64f4-0537-495c-b3bf-148259d7ed36"),
+                HireDate = DateTimeOffset.Parse("Thursday, January 31, 2008	")
+            };
+            var tableEntity = emp.ToTableEntity("Google", "42", e => e.Id, e => e.ExternalId, e => e.HireDate);
+            Assert.Equal("Google", tableEntity.PartitionKey);
+            Assert.False(tableEntity.Properties.ContainsKey("ExternalId"));
+            Assert.False(tableEntity.Properties.ContainsKey("HireDate"));
+        }
+
+
+        [Fact]
+        public void convert_to_entity_table_ignore_complex_properties()
+        {
+            var emp = new Employee()
+            {
+                Company = "Google",
+                Name = "John Smith",
+                Department = new Department
+                {
+                    Name = "QA",
+                    Id = 1,
+                    OptionalId = null
+                },
+                ExternalId = Guid.Parse("e3bf64f4-0537-495c-b3bf-148259d7ed36"),
+                HireDate = DateTimeOffset.Parse("Thursday, January 31, 2008	")
+            };
+            var tableEntity = emp.ToTableEntity(e => e.Company, e => e.Id, e => e.Department);
+            Assert.Equal("Google", tableEntity.PartitionKey);
+            Assert.True(tableEntity.Properties.ContainsKey("ExternalId"));
+            Assert.True(tableEntity.Properties.ContainsKey("HireDate"));
+            Assert.False(tableEntity.Properties.ContainsKey("DepartmentJson"));
+        }
+
     }
 }

@@ -10,16 +10,17 @@ namespace TableStorage.Abstractions.TableEntityConverters
 {
     public static class EntityConvert
     {
-        public static DynamicTableEntity ToTableEntity<T>(this T o, string partitionKey, string rowKey)
+        public static DynamicTableEntity ToTableEntity<T>(this T o, string partitionKey, string rowKey, params Expression<Func<T, object>>[] ignoredProperties)
         {
             var type = typeof(T);
             var properties = GetProperties<T>(type);
+            RemoveIgnoredProperties(properties, ignoredProperties);
             return CreateTableEntity(o, properties, partitionKey, rowKey);
         }
 
 
         public static DynamicTableEntity ToTableEntity<T>(this T o, Expression<Func<T, object>> partitionProperty,
-            Expression<Func<T, object>> rowProperty)
+            Expression<Func<T, object>> rowProperty, params Expression<Func<T, object>>[] ignoredProperties)
         {
             var type = typeof(T);
             var properties = GetProperties<T>(type);
@@ -34,6 +35,7 @@ namespace TableStorage.Abstractions.TableEntityConverters
 
             properties.Remove(partitionProp);
             properties.Remove(rowProp);
+            RemoveIgnoredProperties(properties, ignoredProperties);
 
             var partitionKey = partitionProp.GetValue(o).ToString();
             var rowKey = rowProp.GetValue(o).ToString();
@@ -41,7 +43,7 @@ namespace TableStorage.Abstractions.TableEntityConverters
             return CreateTableEntity(o, properties, partitionKey, rowKey);
         }
 
-
+     
         public static T FromTableEntity<T, TP, TR>(this DynamicTableEntity entity,
             Expression<Func<T, object>> partitionProperty,
             Expression<Func<T, object>> rowProperty) where T : new()
@@ -182,6 +184,18 @@ namespace TableStorage.Abstractions.TableEntityConverters
             return properties;
         }
 
+        private static void RemoveIgnoredProperties<T>(List<PropertyInfo> properties,
+            Expression<Func<T, object>>[] ignoredProperties)
+        {
+            if (ignoredProperties != null)
+            {
+                for (int i = 0; i < ignoredProperties.Length; i++)
+                {
+                    var ignoredProperty = properties.SingleOrDefault(p => p.Name == GetPropertyNameFromExpression(ignoredProperties[i]));
+                    properties.Remove(ignoredProperty);
+                }
+            }
+        }
 
         internal static string GetPropertyNameFromExpression<T>(Expression<Func<T, object>> exp)
         {
