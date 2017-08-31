@@ -1,24 +1,22 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
+<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFramework>netcoreapp2.0</TargetFramework>
-    <Version>1.1.0</Version>
+    <TargetFramework>netstandard2.0</TargetFramework>
+    <Version>1.1.1</Version>
     <Authors>Giovanni Galbo</Authors>
-    <Company />
+    <Company>Giovanni Galbo</Company>
     <Description>Easily convert POCOs (Plain Old CLR Objects) to Azure Table Storage TableEntities and vice versa.  This version is for .net core</Description>
+    <Copyright>Giovanni Galbo  © 2017</Copyright>
+    <PackageLicenseUrl>https://github.com/giometrix/TableStorage.Abstractions.TableEntityConverters/blob/master/LICENSE</PackageLicenseUrl>
     <PackageProjectUrl>https://github.com/giometrix/TableStorage.Abstractions.TableEntityConverters</PackageProjectUrl>
+    <RepositoryUrl>https://github.com/giometrix/TableStorage.Abstractions.TableEntityConverters</RepositoryUrl>
     <PackageTags>table-storage azure-table-storage poco table-entities</PackageTags>
-    <AssemblyVersion>1.1.0.0</AssemblyVersion>
-    <FileVersion>1.1.0.0</FileVersion>
+    <PackageReleaseNotes>This release introduces the ability to ignore properties when converting to an TableEntity.  You'd do this if you don't want to save certain properties to Azure Table Storage.  This release also was updated to .net standard 2.0.</PackageReleaseNotes>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
   </PropertyGroup>
 
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
-    <DefineConstants>TRACE;RELEASE;NETCOREAPP2_0</DefineConstants>
-  </PropertyGroup>
-
   <ItemGroup>
-    <PackageReference Include="WindowsAzure.Storage" Version="8.3.0" />
+    <PackageReference Include="WindowsAzure.Storage" Version="8.4.0" />
   </ItemGroup>
 
 </Project>

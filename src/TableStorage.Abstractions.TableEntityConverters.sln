@@ -1,13 +1,11 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 15
-VisualStudioVersion = 15.0.26430.16
+VisualStudioVersion = 15.0.26730.12
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TableStorage.Abstractions.TableEntityConverters", "TableStorage.Abstractions.TableEntityConverters\TableStorage.Abstractions.TableEntityConverters.csproj", "{891284B6-1A51-4824-BDB3-8A83C18235A8}"
-EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TableStorage.Abstractions.UnitTests", "TableStorage.Abstractions.UnitTests\TableStorage.Abstractions.UnitTests.csproj", "{FB854D17-D359-4444-AE9F-E0A042420208}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TableStorage.Abstractions.TableEntityConverters.DotNet", "TableStorage.Abstractions.TableEntityConverters.DotNet\TableStorage.Abstractions.TableEntityConverters.DotNet.csproj", "{ACE063FF-0C99-41F7-92CA-745731571BB9}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TableStorage.Abstractions.TableEntityConverters", "TableStorage.Abstractions.TableEntityConverters\TableStorage.Abstractions.TableEntityConverters.csproj", "{03927BE3-024A-48B7-8CFA-C3508F824F27}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -15,20 +13,19 @@ Global
 		Release|Any CPU = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{891284B6-1A51-4824-BDB3-8A83C18235A8}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{891284B6-1A51-4824-BDB3-8A83C18235A8}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{891284B6-1A51-4824-BDB3-8A83C18235A8}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{891284B6-1A51-4824-BDB3-8A83C18235A8}.Release|Any CPU.Build.0 = Release|Any CPU
 		{FB854D17-D359-4444-AE9F-E0A042420208}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{FB854D17-D359-4444-AE9F-E0A042420208}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{FB854D17-D359-4444-AE9F-E0A042420208}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{FB854D17-D359-4444-AE9F-E0A042420208}.Release|Any CPU.Build.0 = Release|Any CPU
-		{ACE063FF-0C99-41F7-92CA-745731571BB9}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{ACE063FF-0C99-41F7-92CA-745731571BB9}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{ACE063FF-0C99-41F7-92CA-745731571BB9}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{ACE063FF-0C99-41F7-92CA-745731571BB9}.Release|Any CPU.Build.0 = Release|Any CPU
+		{03927BE3-024A-48B7-8CFA-C3508F824F27}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{03927BE3-024A-48B7-8CFA-C3508F824F27}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{03927BE3-024A-48B7-8CFA-C3508F824F27}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{03927BE3-024A-48B7-8CFA-C3508F824F27}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {34F40B82-8E60-4625-B813-A57525F33312}
 	EndGlobalSection
 EndGlobal
