@@ -26,5 +26,10 @@ namespace TableStorage.Abstractions.UnitTests
         public DateTimeOffset HireDate { get; set; }
         public DateTimeOffset? TermDate { get; set; }
         public Department Department { get; set; }
+
+        // extra stuff
+        public DateTime ADateTime { get; set; }
+        public DateTime? ANullableDateTime { get; set; }
+        public int? ANullableInt { get; set; }
     }
 }

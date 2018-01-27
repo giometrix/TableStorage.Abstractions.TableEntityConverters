@@ -95,7 +95,7 @@ namespace TableStorage.Abstractions.TableEntityConverters
                     var val = entity.Properties[propertyInfo.Name].PropertyAsObject;
 
 
-                    if (val != null && propertyInfo.PropertyType == typeof(DateTimeOffset))
+                    if (val != null && (propertyInfo.PropertyType == typeof(DateTimeOffset) || propertyInfo.PropertyType == typeof(DateTimeOffset?)))
                         val = entity.Properties[propertyInfo.Name].DateTimeOffsetValue;
                     if (val != null && propertyInfo.PropertyType == typeof(double))
                         val = entity.Properties[propertyInfo.Name].DoubleValue;
