@@ -215,6 +215,29 @@ namespace TableStorage.Abstractions.UnitTests
             Assert.Equal(Guid.Parse("12ae85a4-7131-4e8c-af63-074b066412e0"), employee.Department.OptionalId);
         }
 
+        [Fact]
+        public void convert_from_entity_table_unmapped_partition_key_and_unmapped_row_key()
+        {
+            var emp = new Employee()
+            {
+                Company = "Microsoft",
+                Name = "John Smith",
+                Department = new Department
+                {
+                    Name = "QA",
+                    Id = 1,
+                    OptionalId = Guid.Parse("12ae85a4-7131-4e8c-af63-074b066412e0")
+                },
+                Id = 42,
+                ExternalId = Guid.Parse("e3bf64f4-0537-495c-b3bf-148259d7ed36"),
+                HireDate = DateTimeOffset.Parse("Thursday, January 31, 2008	")
+            };
+            var te = emp.ToTableEntity($"company_{emp.Company}", $"employee_{emp.Id}");
+            var employee = te.FromTableEntity<Employee>();
+
+            Assert.Equal(Guid.Parse("12ae85a4-7131-4e8c-af63-074b066412e0"), employee.Department.OptionalId);
+        }
+
         public class GuidKeyTest
         {
             public Guid A { get; set; }

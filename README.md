@@ -97,3 +97,16 @@ Here is an example where a more complicated key was used, which is common in azu
 var employee = tableEntity.FromTableEntity<Employee, string, int>(e=>e.Company, pk=>pk.Substring("company_".Length), e => e.Id, rk=>int.Parse(rk.Substring("employee_".Length)));
 ```
 In this example the partitionkey had a prefix of "company_" and the row key had a prefix of "employee_".
+
+### Converting From Table Entity While Ignoring Key Properties (Partition Key and Row Key)
+When converting from a table entity, you may not want to populate any fields derived from `PartitionKey` and `RowKey`.  One reason for doing this might be that those keys are complex (derived from multiple properties for instance), and you already have those simple properties in your entity.
+
+For your conveninece you can use the simplified `FromTableEntity` method.  This is the equivilant of doing 
+```csharp
+var employee = tableEntity.FromTableEntity<Employee,object,object>(null, null, null, null);
+```
+
+Example:
+```csharp
+var employee = tableEntity.FromTableEntity<Employee>();
+```

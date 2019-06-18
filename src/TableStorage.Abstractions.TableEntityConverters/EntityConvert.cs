@@ -89,6 +89,17 @@ namespace TableStorage.Abstractions.TableEntityConverters
                 rowProp.SetValue(o, convertRowKey(entity.RowKey));
                 properties.Remove(rowProp);
             }
+            FillProperties(entity, o, properties);
+            return o;
+        }
+
+        public static T FromTableEntity<T>(this DynamicTableEntity entity) where T : new()
+        {
+            return entity.FromTableEntity<T, object, object>(null, null, null, null);
+        }
+
+        private static void FillProperties<T>(DynamicTableEntity entity, T o, List<PropertyInfo> properties) where T : new()
+        {
             foreach (var propertyInfo in properties)
                 if (entity.Properties.ContainsKey(propertyInfo.Name))
                 {
@@ -117,7 +128,6 @@ namespace TableStorage.Abstractions.TableEntityConverters
                         propertyInfo.SetValue(o, propVal);
                     }
                 }
-            return o;
         }
 
         private static DynamicTableEntity CreateTableEntity(object o, List<PropertyInfo> properties,

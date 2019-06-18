@@ -2,7 +2,7 @@
 
   <PropertyGroup>
     <TargetFrameworks>netstandard2.0;netcoreapp2.0;net462</TargetFrameworks>
-    <Version>1.1.4</Version>
+    <Version>1.1.5</Version>
     <Authors>Giovanni Galbo</Authors>
     <Company>Giovanni Galbo</Company>
     <Description>Easily convert POCOs (Plain Old CLR Objects) to Azure Table Storage TableEntities and vice versa.</Description>
@@ -11,7 +11,7 @@
     <PackageProjectUrl>https://github.com/giometrix/TableStorage.Abstractions.TableEntityConverters</PackageProjectUrl>
     <RepositoryUrl>https://github.com/giometrix/TableStorage.Abstractions.TableEntityConverters</RepositoryUrl>
     <PackageTags>table-storage azure-table-storage poco table-entities</PackageTags>
-    <PackageReleaseNotes>Updating nuget packages</PackageReleaseNotes>
+    <PackageReleaseNotes>Easier way to convert from table entity without any mapped keys</PackageReleaseNotes>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
     <PackageRequireLicenseAcceptance>false</PackageRequireLicenseAcceptance>
   </PropertyGroup>
