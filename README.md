@@ -1,6 +1,7 @@
 # TableStorage.Abstractions.TableEntityConverters
 [![Build status](https://ci.appveyor.com/api/projects/status/20rwpny4jfng24ws?svg=true)](https://ci.appveyor.com/project/giometrix/tablestorage-abstractions-tableentityconverters)
 [![NuGet](https://img.shields.io/nuget/v/TableStorage.Abstractions.TableEntityConverters.svg)](https://www.nuget.org/packages/TableStorage.Abstractions.TableEntityConverters/)
+[![Nuget Downloads](https://img.shields.io/nuget/dt/TableStorage.Abstractions.TableEntityConverters.svg?color=purple&logo=nuget)](https://www.nuget.org/packages/TableStorage.Abstractions.TableEntityConverters)
 
 Easily convert POCOs (Plain Old CLR Objects) to Azure Table Storage TableEntities and vice versa
 
