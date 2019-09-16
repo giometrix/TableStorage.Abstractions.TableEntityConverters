@@ -26,11 +26,15 @@ namespace TableStorage.Abstractions.TableEntityConverters
 			var partitionProp =
 				properties.SingleOrDefault(p => p.Name == GetPropertyNameFromExpression(partitionProperty));
 			if (partitionProp == null)
+			{
 				throw new ArgumentException(nameof(partitionProperty));
+			}
 
 			var rowProp = properties.SingleOrDefault(p => p.Name == GetPropertyNameFromExpression(rowProperty));
 			if (rowProp == null)
+			{
 				throw new ArgumentException(nameof(rowProperty));
+			}
 
 			properties.Remove(partitionProp);
 			properties.Remove(rowProp);
@@ -124,6 +128,7 @@ namespace TableStorage.Abstractions.TableEntityConverters
 		private static void FillProperties<T>(DynamicTableEntity entity, T o, List<PropertyInfo> properties) where T : new()
 		{
 			foreach (var propertyInfo in properties)
+			{
 				if (entity.Properties.ContainsKey(propertyInfo.Name))
 				{
 					var val = entity.Properties[propertyInfo.Name].PropertyAsObject;
@@ -165,6 +170,7 @@ namespace TableStorage.Abstractions.TableEntityConverters
 						propertyInfo.SetValue(o, propVal);
 					}
 				}
+			}
 		}
 
 		private static DynamicTableEntity CreateTableEntity(object o, List<PropertyInfo> properties,
