@@ -1,10 +1,10 @@
-﻿using Microsoft.WindowsAzure.Storage.Table;
-using Newtonsoft.Json;
+﻿using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Reflection;
+using Microsoft.Azure.Cosmos.Table;
 
 namespace TableStorage.Abstractions.TableEntityConverters
 {
