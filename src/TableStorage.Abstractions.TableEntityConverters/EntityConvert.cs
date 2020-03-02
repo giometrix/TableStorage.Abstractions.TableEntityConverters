@@ -130,7 +130,7 @@ namespace TableStorage.Abstractions.TableEntityConverters
 		private static void SetTimestamp<T>(DynamicTableEntity entity, T o, List<PropertyInfo> properties) where T : new()
 		{
 			var timestampProperty = properties
-					.FirstOrDefault(p => p.Name == nameof(TableEntity.Timestamp));
+					.FirstOrDefault(p => p.Name == nameof(DynamicTableEntity.Timestamp));
 
 			if (timestampProperty != null)
 			{
