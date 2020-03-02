@@ -36,6 +36,54 @@ namespace TableStorage.Abstractions.UnitTests
 		}
 
 		[Fact]
+		public void convert_from_entity_table_with_timestamp()
+		{
+			var emp = new EmployeeWithTimestamp
+            {
+				Company = "Microsoft",
+				Name = "John Smith",
+				Department = new Department
+				{
+					Name = "QA",
+					Id = 1,
+					OptionalId = Guid.Parse("12ae85a4-7131-4e8c-af63-074b066412e0")
+				},
+				Id = 42,
+				ExternalId = Guid.Parse("e3bf64f4-0537-495c-b3bf-148259d7ed36"),
+				HireDate = DateTimeOffset.Parse("Thursday, January 31, 2008	")
+			};
+			var tableEntity = emp.ToTableEntity(e => e.Company, e => e.Id);
+			tableEntity.Timestamp = DateTime.UtcNow;
+			var employee = tableEntity.FromTableEntity<EmployeeWithTimestamp, string, int>(e => e.Company, e => e.Id);
+			Assert.Equal(Guid.Parse("12ae85a4-7131-4e8c-af63-074b066412e0"), employee.Department.OptionalId);
+			Assert.Equal(tableEntity.Timestamp, employee.Timestamp);
+		}
+
+		[Fact]
+		public void convert_from_entity_table_with_timestamp_as_string()
+		{
+			var emp = new EmployeeWithTimestampAsString
+            {
+				Company = "Microsoft",
+				Name = "John Smith",
+				Department = new Department
+				{
+					Name = "QA",
+					Id = 1,
+					OptionalId = Guid.Parse("12ae85a4-7131-4e8c-af63-074b066412e0")
+				},
+				Id = 42,
+				ExternalId = Guid.Parse("e3bf64f4-0537-495c-b3bf-148259d7ed36"),
+				HireDate = DateTimeOffset.Parse("Thursday, January 31, 2008	")
+			};
+			var tableEntity = emp.ToTableEntity(e => e.Company, e => e.Id);
+			tableEntity.Timestamp = DateTime.UtcNow;
+			var employee = tableEntity.FromTableEntity<EmployeeWithTimestampAsString, string, int>(e => e.Company, e => e.Id);
+			Assert.Equal(Guid.Parse("12ae85a4-7131-4e8c-af63-074b066412e0"), employee.Department.OptionalId);
+			Assert.Equal(tableEntity.Timestamp.ToString(), employee.Timestamp);
+		}
+
+		[Fact]
 		public void convert_from_entity_table_complex_key()
 		{
 			var emp = new Employee
@@ -235,7 +283,7 @@ namespace TableStorage.Abstractions.UnitTests
 			};
 			var tableEntity = emp.ToTableEntity(e => e.Company, e => e.Id);
 
-			Assert.Equal(true, tableEntity.Properties.ContainsKey("DepartmentJson"));
+			Assert.True(tableEntity.Properties.ContainsKey("DepartmentJson"));
 		}
 
 		[Fact]
