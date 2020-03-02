@@ -155,10 +155,9 @@ namespace TableStorage.Abstractions.TableEntityConverters
 		{
 			foreach (var propertyInfo in properties)
 			{
-				if (entity.Properties.ContainsKey(propertyInfo.Name))
+				if (entity.Properties.ContainsKey(propertyInfo.Name) && propertyInfo.Name != nameof(DynamicTableEntity.Timestamp))
 				{
 					var val = entity.Properties[propertyInfo.Name].PropertyAsObject;
-
 
 					if (val != null && (propertyInfo.PropertyType == typeof(DateTimeOffset) || propertyInfo.PropertyType == typeof(DateTimeOffset?)))
 					{

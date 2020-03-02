@@ -38,8 +38,8 @@ namespace TableStorage.Abstractions.UnitTests
 		[Fact]
 		public void convert_from_entity_table_with_timestamp()
 		{
-			var emp = new Employee
-			{
+			var emp = new EmployeeWithTimestamp
+            {
 				Company = "Microsoft",
 				Name = "John Smith",
 				Department = new Department
@@ -62,8 +62,8 @@ namespace TableStorage.Abstractions.UnitTests
 		[Fact]
 		public void convert_from_entity_table_with_timestamp_as_string()
 		{
-			var emp = new Employee
-			{
+			var emp = new EmployeeWithTimestampAsString
+            {
 				Company = "Microsoft",
 				Name = "John Smith",
 				Department = new Department
@@ -283,7 +283,7 @@ namespace TableStorage.Abstractions.UnitTests
 			};
 			var tableEntity = emp.ToTableEntity(e => e.Company, e => e.Id);
 
-			Assert.Equal(true, tableEntity.Properties.ContainsKey("DepartmentJson"));
+			Assert.True(tableEntity.Properties.ContainsKey("DepartmentJson"));
 		}
 
 		[Fact]
