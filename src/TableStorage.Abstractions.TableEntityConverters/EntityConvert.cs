@@ -97,6 +97,8 @@ namespace TableStorage.Abstractions.TableEntityConverters
 				rowProp.SetValue(o, convertRowKey(entity.RowKey));
 				properties.Remove(rowProp);
 			}
+
+			SetTimestamp(entity, o, properties);
 			FillProperties(entity, o, properties);
 			return o;
 		}
@@ -123,6 +125,30 @@ namespace TableStorage.Abstractions.TableEntityConverters
 			}
 
 			return name;
+		}
+
+		private static void SetTimestamp<T>(DynamicTableEntity entity, T o, List<PropertyInfo> properties) where T : new()
+		{
+			var timestampProperty = properties
+					.FirstOrDefault(p => p.Name == nameof(TableEntity.Timestamp));
+
+			if (timestampProperty != null)
+			{
+				if(timestampProperty.PropertyType == typeof(DateTimeOffset))
+				{
+					timestampProperty.SetValue(o, entity.Timestamp);
+				}
+
+				if (timestampProperty.PropertyType == typeof(DateTime))
+				{
+					timestampProperty.SetValue(o, entity.Timestamp.DateTime);
+				}
+
+				if (timestampProperty.PropertyType == typeof(string))
+				{
+					timestampProperty.SetValue(o, entity.Timestamp.ToString());
+				}
+			}
 		}
 
 		private static void FillProperties<T>(DynamicTableEntity entity, T o, List<PropertyInfo> properties) where T : new()

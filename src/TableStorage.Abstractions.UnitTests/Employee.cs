@@ -24,4 +24,14 @@ namespace TableStorage.Abstractions.UnitTests
 		public DateTime? ANullableDateTime { get; set; }
 		public int? ANullableInt { get; set; }
 	}
+
+	public class EmployeeWithTimestamp : Employee
+	{
+		public DateTimeOffset Timestamp { get; set; }
+	}
+
+	public class EmployeeWithTimestampAsString : Employee
+	{
+		public string Timestamp { get; set; }
+	}
 }
