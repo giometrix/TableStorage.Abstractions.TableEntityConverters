@@ -257,7 +257,7 @@ namespace TableStorage.Abstractions.TableEntityConverters
 
 		private static List<PropertyInfo> GetProperties(Type type)
 		{
-			var properties = type.GetProperties(BindingFlags.Instance | BindingFlags.GetProperty | BindingFlags.Public)
+			var properties = type.GetProperties(BindingFlags.Instance | BindingFlags.Public).Where(p=>p.CanRead && p.CanWrite)
 				.ToList();
 			return properties;
 		}

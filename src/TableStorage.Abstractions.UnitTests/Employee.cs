@@ -23,6 +23,7 @@ namespace TableStorage.Abstractions.UnitTests
 		public DateTime ADateTime { get; set; }
 		public DateTime? ANullableDateTime { get; set; }
 		public int? ANullableInt { get; set; }
+		public string ReadOnlyField => Name + " - " + Id;
 	}
 
 	public class EmployeeWithTimestamp : Employee

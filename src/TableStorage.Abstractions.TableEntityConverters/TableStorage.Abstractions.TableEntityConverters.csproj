@@ -1,17 +1,17 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFrameworks>netstandard2.0;netcoreapp2.0;net462</TargetFrameworks>
-    <Version>1.2</Version>
+    <TargetFrameworks>netstandard2.0</TargetFrameworks>
+    <Version>1.3-beta</Version>
     <Authors>Giovanni Galbo</Authors>
     <Company>Giovanni Galbo</Company>
     <Description>Easily convert POCOs (Plain Old CLR Objects) to Azure Table Storage TableEntities and vice versa.</Description>
-    <Copyright>Giovanni Galbo  © 2019</Copyright>
+    <Copyright>Giovanni Galbo  © 2020</Copyright>
     <PackageLicenseUrl></PackageLicenseUrl>
     <PackageProjectUrl>https://github.com/giometrix/TableStorage.Abstractions.TableEntityConverters</PackageProjectUrl>
     <RepositoryUrl>https://github.com/giometrix/TableStorage.Abstractions.TableEntityConverters</RepositoryUrl>
     <PackageTags>table-storage azure-table-storage poco table-entities</PackageTags>
-    <PackageReleaseNotes>If POCO has a property named Timestamp, automatically populate it.</PackageReleaseNotes>
+    <PackageReleaseNotes>Bug fix for when deserializing objects with readonly properties</PackageReleaseNotes>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
     <PackageRequireLicenseAcceptance>false</PackageRequireLicenseAcceptance>
     <PackageLicenseExpression>MIT</PackageLicenseExpression>
