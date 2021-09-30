@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Collections.Generic;
+using Newtonsoft.Json;
 using TableStorage.Abstractions.TableEntityConverters;
 using Xunit;
 
@@ -6,6 +8,11 @@ namespace TableStorage.Abstractions.UnitTests
 {
 	public class EntityConvertTests
 	{
+		public EntityConvertTests()
+		{
+			EntityConvert.DefaultJsonSerializerSettings = null;
+		}
+		
 		public class GuidKeyTest
 		{
 			public Guid A { get; set; }
@@ -284,6 +291,118 @@ namespace TableStorage.Abstractions.UnitTests
 			var tableEntity = emp.ToTableEntity(e => e.Company, e => e.Id);
 
 			Assert.True(tableEntity.Properties.ContainsKey("DepartmentJson"));
+			var dept = tableEntity.Properties["DepartmentJson"].StringValue.ToLowerInvariant();
+			Assert.Contains("optionalid", dept);
+		}
+		
+		[Fact]
+		public void convert_to_entity_table_custom_json_settings_as_a_global_setting()
+		{
+			EntityConvert.DefaultJsonSerializerSettings = new JsonSerializerSettings {
+				NullValueHandling = NullValueHandling.Ignore,
+			};
+			
+			var emp = new Employee
+			{
+				Company = "Microsoft",
+				Name = "John Smith",
+				Department = new Department
+				{
+					Name = "QA",
+					Id = 1,
+					OptionalId = null
+				},
+				Id = 42,
+				ExternalId = Guid.Parse("e3bf64f4-0537-495c-b3bf-148259d7ed36"),
+				HireDate = DateTimeOffset.Parse("Thursday, January 31, 2008	")
+			};
+			var tableEntity = emp.ToTableEntity(e => e.Company, e => e.Id);
+
+			var dept = tableEntity.Properties["DepartmentJson"].StringValue.ToLowerInvariant();
+			Assert.DoesNotContain("optionalid", dept);
+		}
+		
+		[Fact]
+		public void convert_to_entity_table_custom_json_settings_as_a_local_setting()
+		{
+			var jsonSerializerSettings = new JsonSerializerSettings {
+				NullValueHandling = NullValueHandling.Ignore
+			};
+			
+			var emp = new Employee
+			{
+				Company = "Microsoft",
+				Name = "John Smith",
+				Department = new Department
+				{
+					Name = "QA",
+					Id = 1,
+					OptionalId = null
+				},
+				Id = 42,
+				ExternalId = Guid.Parse("e3bf64f4-0537-495c-b3bf-148259d7ed36"),
+				HireDate = DateTimeOffset.Parse("Thursday, January 31, 2008	")
+			};
+			var tableEntity = emp.ToTableEntity(e => e.Company, e => e.Id, jsonSerializerSettings);
+
+			var dept = tableEntity.Properties["DepartmentJson"].StringValue.ToLowerInvariant();
+			Assert.DoesNotContain("optionalid", dept);
+		}
+		
+		[Fact]
+		public void convert_from_entity_using_custom_json_settings_as_a_global_setting()
+		{
+			EntityConvert.DefaultJsonSerializerSettings = new JsonSerializerSettings {
+				Converters = new List<JsonConverter>{new KeysJsonConverter(typeof(Department))}
+			};
+			
+			var emp = new Employee
+			{
+				Company = "Microsoft",
+				Name = "John Smith",
+				Department = new Department
+				{
+					Name = "QA",
+					Id = 1,
+					OptionalId = null
+				},
+				Id = 42,
+				ExternalId = Guid.Parse("e3bf64f4-0537-495c-b3bf-148259d7ed36"),
+				HireDate = DateTimeOffset.Parse("Thursday, January 31, 2008	")
+			};
+			var tableEntity = emp.ToTableEntity(e => e.Company, e => e.Id);
+			var dept = tableEntity.Properties["DepartmentJson"].StringValue;
+			Assert.Contains("Keys", dept);
+			var deserializedEmp = tableEntity.FromTableEntity<Employee>();
+			Assert.Equal("QA", deserializedEmp.Department.Name);
+		}
+		
+		[Fact]
+		public void convert_from_entity_using_custom_json_settings_as_a_local_setting()
+		{
+			var jsonSerializerSettings = new JsonSerializerSettings {
+				Converters = new List<JsonConverter>{new KeysJsonConverter(typeof(Department))}
+			};
+			
+			var emp = new Employee
+			{
+				Company = "Microsoft",
+				Name = "John Smith",
+				Department = new Department
+				{
+					Name = "QA",
+					Id = 1,
+					OptionalId = null
+				},
+				Id = 42,
+				ExternalId = Guid.Parse("e3bf64f4-0537-495c-b3bf-148259d7ed36"),
+				HireDate = DateTimeOffset.Parse("Thursday, January 31, 2008	")
+			};
+			var tableEntity = emp.ToTableEntity(e => e.Company, e => e.Id, jsonSerializerSettings);
+			var dept = tableEntity.Properties["DepartmentJson"].StringValue;
+			Assert.Contains("Keys", dept);
+			var deserializedEmp = tableEntity.FromTableEntity<Employee>(jsonSerializerSettings);
+			Assert.Equal("QA", deserializedEmp.Department.Name);
 		}
 
 		[Fact]
@@ -323,7 +442,7 @@ namespace TableStorage.Abstractions.UnitTests
 				ExternalId = Guid.Parse("e3bf64f4-0537-495c-b3bf-148259d7ed36"),
 				HireDate = DateTimeOffset.Parse("Thursday, January 31, 2008	")
 			};
-			var tableEntity = emp.ToTableEntity(e => e.Company, e => e.Id, e => e.Department);
+			var tableEntity = emp.ToTableEntity(e => e.Company, e => e.Id,e => e.Department);
 			Assert.Equal("Google", tableEntity.PartitionKey);
 			Assert.True(tableEntity.Properties.ContainsKey("ExternalId"));
 			Assert.True(tableEntity.Properties.ContainsKey("HireDate"));
