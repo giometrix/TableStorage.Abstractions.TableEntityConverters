@@ -10,7 +10,7 @@ namespace TableStorage.Abstractions.UnitTests
 	{
 		public EntityConvertTests()
 		{
-			EntityConvert.DefaultJsonSerializerSettings = null;
+			EntityConvert.SetDefaultJsonSerializerSettings();
 		}
 		
 		public class GuidKeyTest
@@ -298,9 +298,9 @@ namespace TableStorage.Abstractions.UnitTests
 		[Fact]
 		public void convert_to_entity_table_custom_json_settings_as_a_global_setting()
 		{
-			EntityConvert.DefaultJsonSerializerSettings = new JsonSerializerSettings {
+			EntityConvert.SetDefaultJsonSerializerSettings(new JsonSerializerSettings {
 				NullValueHandling = NullValueHandling.Ignore,
-			};
+			});
 			
 			var emp = new Employee
 			{
@@ -352,9 +352,9 @@ namespace TableStorage.Abstractions.UnitTests
 		[Fact]
 		public void convert_from_entity_using_custom_json_settings_as_a_global_setting()
 		{
-			EntityConvert.DefaultJsonSerializerSettings = new JsonSerializerSettings {
+			EntityConvert.SetDefaultJsonSerializerSettings(new JsonSerializerSettings {
 				Converters = new List<JsonConverter>{new KeysJsonConverter(typeof(Department))}
-			};
+			});
 			
 			var emp = new Employee
 			{

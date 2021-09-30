@@ -12,8 +12,14 @@ namespace TableStorage.Abstractions.TableEntityConverters
 	{
 		private static JsonSerializerSettings _defaultJsonSerializerSettings = new JsonSerializerSettings();
 
-		public static JsonSerializerSettings DefaultJsonSerializerSettings {
-			set => _defaultJsonSerializerSettings = value ?? new JsonSerializerSettings();
+		/// <summary>
+		/// Json fields will use be serialized/deserialized with these provided settings when jsonSerializerSettings are
+		/// not explicitly passed into ToTableEntity/FromTableEntity
+		/// </summary>
+		/// <param name="jsonSerializerSettings">Note: null resets to default</param>
+		public static void SetDefaultJsonSerializerSettings (JsonSerializerSettings jsonSerializerSettings = default)
+		{
+			_defaultJsonSerializerSettings = jsonSerializerSettings ?? new JsonSerializerSettings();
 		}
 
 		public static DynamicTableEntity ToTableEntity<T>(this T o, string partitionKey, string rowKey,
