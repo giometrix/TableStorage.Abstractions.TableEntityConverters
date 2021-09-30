@@ -112,3 +112,10 @@ Example:
 ```csharp
 var employee = tableEntity.FromTableEntity<Employee>();
 ```
+
+## Custom Json Serialization Settings For Complex Types
+Beginning with v1.4, you can now control how the json for complex types are serialized/deserialized.
+
+To set the settings globally, use `SetDefaultJsonSerializerSettings`.  Use this option if you want to apply them to all table entity conversions.
+
+The other option is pass in the settingds in the newly overloaded `ToTableEntity` and `FromTableEntity` methods.
