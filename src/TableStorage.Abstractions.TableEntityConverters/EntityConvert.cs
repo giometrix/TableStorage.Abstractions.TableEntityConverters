@@ -193,7 +193,7 @@ namespace TableStorage.Abstractions.TableEntityConverters
 
 				if (timestampProperty.PropertyType == typeof(DateTime))
 				{
-					timestampProperty.SetValue(o, entity.Timestamp.DateTime);
+					timestampProperty.SetValue(o, entity.Timestamp.UtcDateTime);
 				}
 
 				if (timestampProperty.PropertyType == typeof(string))

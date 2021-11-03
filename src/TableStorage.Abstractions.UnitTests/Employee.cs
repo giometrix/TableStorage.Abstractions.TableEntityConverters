@@ -35,4 +35,9 @@ namespace TableStorage.Abstractions.UnitTests
 	{
 		public string Timestamp { get; set; }
 	}
+	
+	public class EmployeeWithTimestampAsDateTime : Employee
+	{
+		public DateTime Timestamp { get; set; }
+	}
 }
