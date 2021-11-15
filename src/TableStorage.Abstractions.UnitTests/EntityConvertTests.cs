@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using Microsoft.Azure.Cosmos.Table;
 using Newtonsoft.Json;
 using TableStorage.Abstractions.TableEntityConverters;
 using Xunit;
@@ -517,6 +518,54 @@ namespace TableStorage.Abstractions.UnitTests
 			Assert.Equal("Google", tableEntity.PartitionKey);
 			Assert.False(tableEntity.Properties.ContainsKey("ExternalId"));
 			Assert.False(tableEntity.Properties.ContainsKey("HireDate"));
+		}
+
+		[Fact]
+		public void convert_to_entity_table_custom_serialized_property()
+		{
+			var car = new Car {
+				Id = "abc",
+				Make = "BMW",
+				Model = "M5",
+				Year = 2022,
+				ReleaseDate = new DateTime(2022, 3, 1)
+			};
+
+			var propertyConverters = new PropertyConverters<Car> {
+				[nameof(car.ReleaseDate)] =
+					new PropertyConverter<Car>(x => 
+							new EntityProperty(car.ReleaseDate.ToString("yyyy-M-d")),
+						(c,p) =>c.ReleaseDate = DateTime.Parse(p.StringValue)
+						)
+			};
+			var carEntity =
+				car.ToTableEntity(c => c.Year, c => car.Id, new JsonSerializerSettings(), propertyConverters);
+			Assert.Equal("2022-3-1", carEntity.Properties[nameof(car.ReleaseDate)].StringValue);
+		}
+		
+		[Fact]
+		public void convert_from_entity_table_custom_serialized_property()
+		{
+			var car = new Car {
+				Id = "abc",
+				Make = "BMW",
+				Model = "M5",
+				Year = 2022,
+				ReleaseDate = new DateTime(2022, 3, 1)
+			};
+
+			var propertyConverters = new PropertyConverters<Car> {
+				[nameof(car.ReleaseDate)] =
+					new PropertyConverter<Car>(x => 
+							new EntityProperty(car.ReleaseDate.ToString("yyyy-M-d")),
+						(c,p) =>c.ReleaseDate = DateTime.Parse(p.StringValue)
+					)
+			};
+			var carEntity =
+				car.ToTableEntity(c => c.Year, c => car.Id, new JsonSerializerSettings(), propertyConverters);
+
+			var fromEntity = carEntity.FromTableEntity<Car,int,string>(c=>c.Year, c=>c.Id, new JsonSerializerSettings(), propertyConverters);
+			Assert.Equal(new DateTime(2022, 3, 1), fromEntity.ReleaseDate);
 		}
 	}
 }

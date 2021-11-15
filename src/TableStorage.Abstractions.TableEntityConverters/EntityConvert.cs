@@ -11,7 +11,7 @@ namespace TableStorage.Abstractions.TableEntityConverters
 	public static class EntityConvert
 	{
 		private static JsonSerializerSettings _defaultJsonSerializerSettings = new JsonSerializerSettings();
-
+		
 		/// <summary>
 		/// Json fields will use be serialized/deserialized with these provided settings when jsonSerializerSettings are
 		/// not explicitly passed into ToTableEntity/FromTableEntity
@@ -25,25 +25,31 @@ namespace TableStorage.Abstractions.TableEntityConverters
 		public static DynamicTableEntity ToTableEntity<T>(this T o, string partitionKey, string rowKey,
 			params Expression<Func<T, object>>[] ignoredProperties)
 		{
-			return ToTableEntity(o, partitionKey, rowKey, _defaultJsonSerializerSettings, ignoredProperties);
+			return ToTableEntity(o, partitionKey, rowKey, _defaultJsonSerializerSettings, default, ignoredProperties);
 		}
-		public static DynamicTableEntity ToTableEntity<T>(this T o, string partitionKey, string rowKey, JsonSerializerSettings jsonSerializerSettings, params Expression<Func<T, object>>[] ignoredProperties)
+		public static DynamicTableEntity ToTableEntity<T>(this T o, string partitionKey, string rowKey,
+			JsonSerializerSettings jsonSerializerSettings, 
+			PropertyConverters<T> propertyConverters,
+			params Expression<Func<T, object>>[] ignoredProperties)
 		{
 			_ = jsonSerializerSettings ?? throw new ArgumentNullException(nameof(jsonSerializerSettings));
 			var type = typeof(T);
 			var properties = GetProperties(type);
 			RemoveIgnoredProperties(properties, ignoredProperties);
-			return CreateTableEntity(o, properties, partitionKey, rowKey, jsonSerializerSettings);
+			return CreateTableEntity(o, properties, partitionKey, rowKey, jsonSerializerSettings, propertyConverters);
 		}
 
 		public static DynamicTableEntity ToTableEntity<T>(this T o, Expression<Func<T, object>> partitionProperty,
-			Expression<Func<T, object>> rowProperty, params Expression<Func<T, object>>[] ignoredProperties)
+			Expression<Func<T, object>> rowProperty,
+			params Expression<Func<T, object>>[] ignoredProperties)
 		{
-			return ToTableEntity(o, partitionProperty, rowProperty, _defaultJsonSerializerSettings, ignoredProperties);
+			return ToTableEntity(o, partitionProperty, rowProperty, _defaultJsonSerializerSettings, null, ignoredProperties);
 		}
 		
 		public static DynamicTableEntity ToTableEntity<T>(this T o, Expression<Func<T, object>> partitionProperty,
-			Expression<Func<T, object>> rowProperty, JsonSerializerSettings jsonSerializerSettings, params Expression<Func<T, object>>[] ignoredProperties)
+			Expression<Func<T, object>> rowProperty, JsonSerializerSettings jsonSerializerSettings, 
+			PropertyConverters<T> propertyConverters = null,
+			params Expression<Func<T, object>>[] ignoredProperties)
 		{
 			_ = jsonSerializerSettings ?? throw new ArgumentNullException(nameof(jsonSerializerSettings));
 			var type = typeof(T);
@@ -64,11 +70,10 @@ namespace TableStorage.Abstractions.TableEntityConverters
 			properties.Remove(partitionProp);
 			properties.Remove(rowProp);
 			RemoveIgnoredProperties(properties, ignoredProperties);
-
 			var partitionKey = partitionProp.GetValue(o).ToString();
 			var rowKey = rowProp.GetValue(o).ToString();
 
-			return CreateTableEntity(o, properties, partitionKey, rowKey, jsonSerializerSettings);
+			return CreateTableEntity(o, properties, partitionKey, rowKey, jsonSerializerSettings, propertyConverters);
 		}
 
 		public static T FromTableEntity<T, TP, TR>(this DynamicTableEntity entity,
@@ -80,7 +85,7 @@ namespace TableStorage.Abstractions.TableEntityConverters
 
 		public static T FromTableEntity<T, TP, TR>(this DynamicTableEntity entity,
 			Expression<Func<T, object>> partitionProperty,
-			Expression<Func<T, object>> rowProperty, JsonSerializerSettings jsonSerializerSettings) where T : new()
+			Expression<Func<T, object>> rowProperty, JsonSerializerSettings jsonSerializerSettings, PropertyConverters<T> propertyConverters = null) where T : new()
 		{
 			_ = jsonSerializerSettings ?? throw new ArgumentNullException(nameof(jsonSerializerSettings));
 			
@@ -96,7 +101,7 @@ namespace TableStorage.Abstractions.TableEntityConverters
 				convertRow = r => (TR)(object)Guid.Parse(r);
 			}
 			return FromTableEntity(entity, partitionProperty, convertPartition,
-				rowProperty, convertRow, jsonSerializerSettings);
+				rowProperty, convertRow, jsonSerializerSettings, propertyConverters);
 		}
 
 		public static T FromTableEntity<T, TP, TR>(this DynamicTableEntity entity,
@@ -111,7 +116,7 @@ namespace TableStorage.Abstractions.TableEntityConverters
 		public static T FromTableEntity<T, TP, TR>(this DynamicTableEntity entity,
 			Expression<Func<T, object>> partitionProperty,
 			Func<string, TP> convertPartitionKey, Expression<Func<T, object>> rowProperty,
-			Func<string, TR> convertRowKey, JsonSerializerSettings jsonSerializerSettings) where T : new()
+			Func<string, TR> convertRowKey, JsonSerializerSettings jsonSerializerSettings, PropertyConverters<T> propertyConverters = null) where T : new()
 		{
 			_ = jsonSerializerSettings ?? throw new ArgumentNullException(nameof(jsonSerializerSettings));
 			
@@ -144,7 +149,7 @@ namespace TableStorage.Abstractions.TableEntityConverters
 			}
 
 			SetTimestamp(entity, o, properties);
-			FillProperties(entity, o, properties, jsonSerializerSettings);
+			FillProperties(entity, o, properties, jsonSerializerSettings, propertyConverters);
 			return o;
 		}
 
@@ -153,11 +158,11 @@ namespace TableStorage.Abstractions.TableEntityConverters
 			return FromTableEntity<T>(entity, _defaultJsonSerializerSettings);
 		}
 		
-		public static T FromTableEntity<T>(this DynamicTableEntity entity, JsonSerializerSettings jsonSerializerSettings) where T : new()
+		public static T FromTableEntity<T>(this DynamicTableEntity entity, JsonSerializerSettings jsonSerializerSettings, PropertyConverters<T> propertyConverters = null) where T : new()
 		{
 			_ = jsonSerializerSettings ?? throw new ArgumentNullException(nameof(jsonSerializerSettings));
 			
-			return entity.FromTableEntity<T, object, object>(null, null, null, null, jsonSerializerSettings);
+			return entity.FromTableEntity<T, object, object>(null, null, null, null, jsonSerializerSettings, propertyConverters);
 		}
 
 		internal static string GetPropertyNameFromExpression<T>(Expression<Func<T, object>> exp)
@@ -203,11 +208,15 @@ namespace TableStorage.Abstractions.TableEntityConverters
 			}
 		}
 
-		private static void FillProperties<T>(DynamicTableEntity entity, T o, List<PropertyInfo> properties, JsonSerializerSettings jsonSerializerSettings) where T : new()
+		private static void FillProperties<T>(DynamicTableEntity entity, T o, List<PropertyInfo> properties, JsonSerializerSettings jsonSerializerSettings, PropertyConverters<T> propertyConverters) where T : new()
 		{
 			foreach (var propertyInfo in properties)
 			{
-				if (entity.Properties.ContainsKey(propertyInfo.Name) && propertyInfo.Name != nameof(DynamicTableEntity.Timestamp))
+				if (propertyConverters != null && entity.Properties.ContainsKey(propertyInfo.Name) && propertyConverters.ContainsKey(propertyInfo.Name))
+				{
+					propertyConverters[propertyInfo.Name].SetObjectProperty(o, entity.Properties[propertyInfo.Name]);
+				}
+				else if (entity.Properties.ContainsKey(propertyInfo.Name) && propertyInfo.Name != nameof(DynamicTableEntity.Timestamp))
 				{
 					var val = entity.Properties[propertyInfo.Name].PropertyAsObject;
 
@@ -250,8 +259,8 @@ namespace TableStorage.Abstractions.TableEntityConverters
 			}
 		}
 
-		private static DynamicTableEntity CreateTableEntity(object o, List<PropertyInfo> properties,
-			string partitionKey, string rowKey, JsonSerializerSettings jsonSerializerSettings)
+		private static DynamicTableEntity CreateTableEntity<T>(object o, List<PropertyInfo> properties,
+			string partitionKey, string rowKey, JsonSerializerSettings jsonSerializerSettings, PropertyConverters<T> propertyConverters)
 		{
 			var entity = new DynamicTableEntity(partitionKey, rowKey);
 			foreach (var propertyInfo in properties)
@@ -259,49 +268,58 @@ namespace TableStorage.Abstractions.TableEntityConverters
 				var name = propertyInfo.Name;
 				var val = propertyInfo.GetValue(o);
 				EntityProperty entityProperty;
-				switch (val)
+				if (propertyConverters != null && propertyConverters.ContainsKey(name))
 				{
-					case int x:
-						entityProperty = new EntityProperty(x);
-						break;
-					case short x:
-						entityProperty = new EntityProperty(x);
-						break;
-					case byte x:
-						entityProperty = new EntityProperty(x);
-						break;
-					case string x:
-						entityProperty = new EntityProperty(x);
-						break;
-					case double x:
-						entityProperty = new EntityProperty(x);
-						break;
-					case DateTime x:
-						entityProperty = new EntityProperty(x);
-						break;
-					case DateTimeOffset x:
-						entityProperty = new EntityProperty(x);
-						break;
-					case bool x:
-						entityProperty = new EntityProperty(x);
-						break;
-					case byte[] x:
-						entityProperty = new EntityProperty(x);
-						break;
-					case long x:
-						entityProperty = new EntityProperty(x);
-						break;
-					case Guid x:
-						entityProperty = new EntityProperty(x);
-						break;
-					case null:
-						entityProperty = new EntityProperty((int?)null);
-						break;
-					default:
-						name += "Json";
-						entityProperty = new EntityProperty(JsonConvert.SerializeObject(val, jsonSerializerSettings ?? _defaultJsonSerializerSettings));
-						break;
+					entityProperty = propertyConverters[name].ToTableEntityProperty((T)o);
 				}
+				else
+				{
+					switch (val)
+					{
+						case int x:
+							entityProperty = new EntityProperty(x);
+							break;
+						case short x:
+							entityProperty = new EntityProperty(x);
+							break;
+						case byte x:
+							entityProperty = new EntityProperty(x);
+							break;
+						case string x:
+							entityProperty = new EntityProperty(x);
+							break;
+						case double x:
+							entityProperty = new EntityProperty(x);
+							break;
+						case DateTime x:
+							entityProperty = new EntityProperty(x);
+							break;
+						case DateTimeOffset x:
+							entityProperty = new EntityProperty(x);
+							break;
+						case bool x:
+							entityProperty = new EntityProperty(x);
+							break;
+						case byte[] x:
+							entityProperty = new EntityProperty(x);
+							break;
+						case long x:
+							entityProperty = new EntityProperty(x);
+							break;
+						case Guid x:
+							entityProperty = new EntityProperty(x);
+							break;
+						case null:
+							entityProperty = new EntityProperty((int?)null);
+							break;
+						default:
+							name += "Json";
+							entityProperty = new EntityProperty(JsonConvert.SerializeObject(val,
+								jsonSerializerSettings ?? _defaultJsonSerializerSettings));
+							break;
+					}
+				}
+
 				entity.Properties[name] = entityProperty;
 			}
 			return entity;
