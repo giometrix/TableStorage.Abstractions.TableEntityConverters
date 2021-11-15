@@ -29,7 +29,7 @@ namespace TableStorage.Abstractions.TableEntityConverters
 		}
 		public static DynamicTableEntity ToTableEntity<T>(this T o, string partitionKey, string rowKey,
 			JsonSerializerSettings jsonSerializerSettings, 
-			PropertyConverters<T> propertyConverters,
+			PropertyConverters<T> propertyConverters = default,
 			params Expression<Func<T, object>>[] ignoredProperties)
 		{
 			_ = jsonSerializerSettings ?? throw new ArgumentNullException(nameof(jsonSerializerSettings));
@@ -48,7 +48,7 @@ namespace TableStorage.Abstractions.TableEntityConverters
 		
 		public static DynamicTableEntity ToTableEntity<T>(this T o, Expression<Func<T, object>> partitionProperty,
 			Expression<Func<T, object>> rowProperty, JsonSerializerSettings jsonSerializerSettings, 
-			PropertyConverters<T> propertyConverters = null,
+			PropertyConverters<T> propertyConverters = default,
 			params Expression<Func<T, object>>[] ignoredProperties)
 		{
 			_ = jsonSerializerSettings ?? throw new ArgumentNullException(nameof(jsonSerializerSettings));
@@ -85,7 +85,9 @@ namespace TableStorage.Abstractions.TableEntityConverters
 
 		public static T FromTableEntity<T, TP, TR>(this DynamicTableEntity entity,
 			Expression<Func<T, object>> partitionProperty,
-			Expression<Func<T, object>> rowProperty, JsonSerializerSettings jsonSerializerSettings, PropertyConverters<T> propertyConverters = null) where T : new()
+			Expression<Func<T, object>> rowProperty, 
+			JsonSerializerSettings jsonSerializerSettings, 
+			PropertyConverters<T> propertyConverters = default) where T : new()
 		{
 			_ = jsonSerializerSettings ?? throw new ArgumentNullException(nameof(jsonSerializerSettings));
 			
@@ -116,7 +118,8 @@ namespace TableStorage.Abstractions.TableEntityConverters
 		public static T FromTableEntity<T, TP, TR>(this DynamicTableEntity entity,
 			Expression<Func<T, object>> partitionProperty,
 			Func<string, TP> convertPartitionKey, Expression<Func<T, object>> rowProperty,
-			Func<string, TR> convertRowKey, JsonSerializerSettings jsonSerializerSettings, PropertyConverters<T> propertyConverters = null) where T : new()
+			Func<string, TR> convertRowKey, JsonSerializerSettings jsonSerializerSettings, 
+			PropertyConverters<T> propertyConverters = default) where T : new()
 		{
 			_ = jsonSerializerSettings ?? throw new ArgumentNullException(nameof(jsonSerializerSettings));
 			
@@ -158,7 +161,8 @@ namespace TableStorage.Abstractions.TableEntityConverters
 			return FromTableEntity<T>(entity, _defaultJsonSerializerSettings);
 		}
 		
-		public static T FromTableEntity<T>(this DynamicTableEntity entity, JsonSerializerSettings jsonSerializerSettings, PropertyConverters<T> propertyConverters = null) where T : new()
+		public static T FromTableEntity<T>(this DynamicTableEntity entity, 
+			JsonSerializerSettings jsonSerializerSettings, PropertyConverters<T> propertyConverters = default) where T : new()
 		{
 			_ = jsonSerializerSettings ?? throw new ArgumentNullException(nameof(jsonSerializerSettings));
 			
