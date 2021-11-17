@@ -532,7 +532,7 @@ namespace TableStorage.Abstractions.UnitTests
 			};
 
 			var propertyConverters = new PropertyConverters<Car> {
-				[nameof(car.ReleaseDate)] =
+				[nameof(Car.ReleaseDate)] =
 					new PropertyConverter<Car>(x => 
 							new EntityProperty(car.ReleaseDate.ToString("yyyy-M-d")),
 						(c,p) =>c.ReleaseDate = DateTime.Parse(p.StringValue)
