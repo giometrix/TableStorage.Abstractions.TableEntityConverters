@@ -19,7 +19,7 @@ Examples
 ========
 We'll use the following two classes for our examples
 
-```csharp
+```c#
     public class Department
     {
         public int Id { get; set; }
@@ -43,7 +43,7 @@ We'll use the following two classes for our examples
 Converting to a table entity is easy.  Use the ``.ToTableEntity()`` extension method and specify which properties represent the partition key and row key.  If you need to customize how any of those two keys serialize there are overloads that accept string values.
 
 Example:
-```csharp
+```c#
 var emp = new Employee()
             {
                 Company = "Microsoft",
@@ -62,7 +62,7 @@ var emp = new Employee()
 ```
 
 Below is an example that uses string keys instead:
-```csharp
+```c#
  var emp = new Employee()
             {
                 Name = "John Smith",
@@ -81,7 +81,7 @@ Below is an example that uses string keys instead:
 When converting your POCO to a table entity and ultimately serializing and persisting to Azure Table Storage, you may want to ignore some fields.  To ignore properties, use the optional ```ignoredProperties``` parameter.
 
 Example:
-```csharp
+```c#
  var tableEntity = emp.ToTableEntity(e=>e.Company, e=>e.Id, e=>e.ExternalId, e=>e.HireDate);
 ```
 In the above example the partition key is ```Company```, the row key is ```Id``` and we ignored ```ExternalId``` and ```HireDate```.
@@ -90,12 +90,12 @@ In the above example the partition key is ```Company```, the row key is ```Id```
 Converting from a table entity is just as simple.  If the both the partition keys can be converted to simple types, you can use the shorter overloaded extension method (```FromTableEntity```).
 
 Here is a simple example where we specify the partition key (```Company```) and the row key (```Id```):
-```csharp
+```c#
  var employee = tableEntity.FromTableEntity<Employee, string, int>(e => e.Company, e => e.Id);
 ```
 
 Here is an example where a more complicated key was used, which is common in azure table storage because of the lack of indexes.
-```csharp
+```c#
 var employee = tableEntity.FromTableEntity<Employee, string, int>(e=>e.Company, pk=>pk.Substring("company_".Length), e => e.Id, rk=>int.Parse(rk.Substring("employee_".Length)));
 ```
 In this example the partitionkey had a prefix of "company_" and the row key had a prefix of "employee_".
@@ -104,12 +104,12 @@ In this example the partitionkey had a prefix of "company_" and the row key had 
 When converting from a table entity, you may not want to populate any fields derived from `PartitionKey` and `RowKey`.  One reason for doing this might be that those keys are complex (derived from multiple properties for instance), and you already have those simple properties in your entity.
 
 For your conveninece you can use the simplified `FromTableEntity` method.  This is the equivilant of doing 
-```csharp
+```c#
 var employee = tableEntity.FromTableEntity<Employee,object,object>(null, null, null, null);
 ```
 
 Example:
-```csharp
+```c#
 var employee = tableEntity.FromTableEntity<Employee>();
 ```
 
@@ -119,3 +119,36 @@ Beginning with v1.4, you can now control how the json for complex types are seri
 To set the settings globally, use `SetDefaultJsonSerializerSettings`.  Use this option if you want to apply them to all table entity conversions.
 
 The other option is pass in the settingds in the newly overloaded `ToTableEntity` and `FromTableEntity` methods.
+
+## Custom Property Conversion For Non-Key Fields
+Starting in 1.5 you can specify custom property converters for properties that are not used as Partition or Row Key fields.
+
+This is a niche use case, but useful if you need it, for example, if dates are stored as strings in Azure Table Storage.
+
+Here is the object we'll be using in the example:
+```c#
+var car = new Car {
+    Id = "abc",
+    Make = "BMW",
+    Model = "M5",
+    Year = 2022,
+    ReleaseDate = new DateTime(2022, 3, 1)
+};
+
+```
+
+First we need to specify property converters.  `PropertyConverters` is a dictionary.  The key is the 
+property name and the value is a `PropertyConverter`, which specifies how to convert to and from `EntityProperty`.
+
+Finally, pass the `PropertyConverters` object when converting to and from your table entities.
+
+Note that in production use cases you don't have to always instantiate your property converters, you should have a single instance and re-use.
+
+```c#
+var jsonSerializerSettings = new JsonSerializerSettings();
+
+var carEntity =
+    car.ToTableEntity(c => c.Year, c => car.Id, jsonSerializerSettings, propertyConverters);
+
+var fromEntity = carEntity.FromTableEntity<Car,int,string>(c=>c.Year, c=>c.Id, jsonSerializerSettings, propertyConverters);
+```

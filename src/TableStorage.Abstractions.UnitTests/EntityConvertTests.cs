@@ -556,15 +556,18 @@ namespace TableStorage.Abstractions.UnitTests
 
 			var propertyConverters = new PropertyConverters<Car> {
 				[nameof(car.ReleaseDate)] =
-					new PropertyConverter<Car>(x => 
+					new(_ => 
 							new EntityProperty(car.ReleaseDate.ToString("yyyy-M-d")),
 						(c,p) =>c.ReleaseDate = DateTime.Parse(p.StringValue)
 					)
 			};
-			var carEntity =
-				car.ToTableEntity(c => c.Year, c => car.Id, new JsonSerializerSettings(), propertyConverters);
 
-			var fromEntity = carEntity.FromTableEntity<Car,int,string>(c=>c.Year, c=>c.Id, new JsonSerializerSettings(), propertyConverters);
+			var jsonSerializerSettings = new JsonSerializerSettings();
+			
+			var carEntity =
+				car.ToTableEntity(c => c.Year, c => car.Id, jsonSerializerSettings, propertyConverters);
+
+			var fromEntity = carEntity.FromTableEntity<Car,int,string>(c=>c.Year, c=>c.Id, jsonSerializerSettings, propertyConverters);
 			Assert.Equal(new DateTime(2022, 3, 1), fromEntity.ReleaseDate);
 		}
 	}
