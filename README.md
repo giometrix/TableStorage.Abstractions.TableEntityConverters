@@ -140,6 +140,15 @@ var car = new Car {
 First we need to specify property converters.  `PropertyConverters` is a dictionary.  The key is the 
 property name and the value is a `PropertyConverter`, which specifies how to convert to and from `EntityProperty`.
 
+```c#
+var propertyConverters = new PropertyConverters<Car> {
+    [nameof(car.ReleaseDate)] =
+        new PropertyConverter<Car>(x => 
+                new EntityProperty(car.ReleaseDate.ToString("yyyy-M-d")),
+            (c,p) =>c.ReleaseDate = DateTime.Parse(p.StringValue)
+         )
+};
+```
 Finally, pass the `PropertyConverters` object when converting to and from your table entities.
 
 Note that in production use cases you don't have to always instantiate your property converters, you should have a single instance and re-use.
