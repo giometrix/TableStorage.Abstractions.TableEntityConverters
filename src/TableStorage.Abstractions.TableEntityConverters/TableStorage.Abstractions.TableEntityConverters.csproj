@@ -22,7 +22,7 @@
     <SymbolPackageFormat>snupkg</SymbolPackageFormat>
     <AssemblyVersion>1.4.0.0</AssemblyVersion>
     <Nullable>disable</Nullable>
-    <PackageVersion>1.5.0.0</PackageVersion>
+    <PackageVersion>1.4.0.0-beta</PackageVersion>
     <SignAssembly>False</SignAssembly>
     <PackageReadmeFile>README.md</PackageReadmeFile>
   </PropertyGroup>
