@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using Microsoft.Azure.Cosmos.Table;
 using Newtonsoft.Json;
 using TableStorage.Abstractions.TableEntityConverters;
 using Xunit;
@@ -316,8 +315,8 @@ namespace TableStorage.Abstractions.UnitTests
 			};
 			var tableEntity = emp.ToTableEntity(e => e.Company, e => e.Id);
 
-			Assert.True(tableEntity.Properties.ContainsKey("DepartmentJson"));
-			var dept = tableEntity.Properties["DepartmentJson"].StringValue.ToLowerInvariant();
+			Assert.True(tableEntity.Keys.Contains("DepartmentJson"));
+			var dept = tableEntity.GetString("DepartmentJson").ToLowerInvariant();
 			Assert.Contains("optionalid", dept);
 		}
 		
@@ -344,7 +343,7 @@ namespace TableStorage.Abstractions.UnitTests
 			};
 			var tableEntity = emp.ToTableEntity(e => e.Company, e => e.Id);
 
-			var dept = tableEntity.Properties["DepartmentJson"].StringValue.ToLowerInvariant();
+			var dept = tableEntity.GetString("DepartmentJson").ToLowerInvariant();
 			Assert.DoesNotContain("optionalid", dept);
 		}
 		
@@ -371,7 +370,7 @@ namespace TableStorage.Abstractions.UnitTests
 			};
 			var tableEntity = emp.ToTableEntity(e => e.Company, e => e.Id, jsonSerializerSettings);
 
-			var dept = tableEntity.Properties["DepartmentJson"].StringValue.ToLowerInvariant();
+			var dept = tableEntity.GetString("DepartmentJson").ToLowerInvariant();
 			Assert.DoesNotContain("optionalid", dept);
 		}
 		
@@ -397,7 +396,7 @@ namespace TableStorage.Abstractions.UnitTests
 				HireDate = DateTimeOffset.Parse("Thursday, January 31, 2008	")
 			};
 			var tableEntity = emp.ToTableEntity(e => e.Company, e => e.Id);
-			var dept = tableEntity.Properties["DepartmentJson"].StringValue;
+			var dept = tableEntity.GetString("DepartmentJson");
 			Assert.Contains("Keys", dept);
 			var deserializedEmp = tableEntity.FromTableEntity<Employee>();
 			Assert.Equal("QA", deserializedEmp.Department.Name);
@@ -425,7 +424,7 @@ namespace TableStorage.Abstractions.UnitTests
 				HireDate = DateTimeOffset.Parse("Thursday, January 31, 2008	")
 			};
 			var tableEntity = emp.ToTableEntity(e => e.Company, e => e.Id, jsonSerializerSettings);
-			var dept = tableEntity.Properties["DepartmentJson"].StringValue;
+			var dept = tableEntity.GetString("DepartmentJson");
 			Assert.Contains("Keys", dept);
 			var deserializedEmp = tableEntity.FromTableEntity<Employee>(jsonSerializerSettings);
 			Assert.Equal("QA", deserializedEmp.Department.Name);
@@ -470,9 +469,9 @@ namespace TableStorage.Abstractions.UnitTests
 			};
 			var tableEntity = emp.ToTableEntity(e => e.Company, e => e.Id,e => e.Department);
 			Assert.Equal("Google", tableEntity.PartitionKey);
-			Assert.True(tableEntity.Properties.ContainsKey("ExternalId"));
-			Assert.True(tableEntity.Properties.ContainsKey("HireDate"));
-			Assert.False(tableEntity.Properties.ContainsKey("DepartmentJson"));
+			Assert.True(tableEntity.Keys.Contains("ExternalId"));
+			Assert.True(tableEntity.Keys.Contains("HireDate"));
+			Assert.False(tableEntity.Keys.Contains("DepartmentJson"));
 		}
 
 
@@ -495,8 +494,8 @@ namespace TableStorage.Abstractions.UnitTests
 			};
 			var tableEntity = emp.ToTableEntity(e => e.Company, e => e.Id, e => e.ExternalId, e => e.HireDate);
 			Assert.Equal("Google", tableEntity.PartitionKey);
-			Assert.False(tableEntity.Properties.ContainsKey("ExternalId"));
-			Assert.False(tableEntity.Properties.ContainsKey("HireDate"));
+			Assert.False(tableEntity.Keys.Contains("ExternalId"));
+			Assert.False(tableEntity.Keys.Contains("HireDate"));
 		}
 
 		[Fact]
@@ -516,8 +515,8 @@ namespace TableStorage.Abstractions.UnitTests
 			};
 			var tableEntity = emp.ToTableEntity("Google", "42", e => e.ExternalId, e => e.HireDate);
 			Assert.Equal("Google", tableEntity.PartitionKey);
-			Assert.False(tableEntity.Properties.ContainsKey("ExternalId"));
-			Assert.False(tableEntity.Properties.ContainsKey("HireDate"));
+			Assert.False(tableEntity.Keys.Contains("ExternalId"));
+			Assert.False(tableEntity.Keys.Contains("HireDate"));
 		}
 
 		[Fact]
@@ -534,13 +533,13 @@ namespace TableStorage.Abstractions.UnitTests
 			var propertyConverters = new PropertyConverters<Car> {
 				[nameof(Car.ReleaseDate)] =
 					new PropertyConverter<Car>(x => 
-							new EntityProperty(car.ReleaseDate.ToString("yyyy-M-d")),
-						(c,p) =>c.ReleaseDate = DateTime.Parse(p.StringValue)
+							car.ReleaseDate.ToString("yyyy-M-d"),
+						(c,p) =>c.ReleaseDate = DateTime.Parse(p.ToString())
 						)
 			};
 			var carEntity =
 				car.ToTableEntity(c => c.Year, c => car.Id, new JsonSerializerSettings(), propertyConverters);
-			Assert.Equal("2022-3-1", carEntity.Properties[nameof(car.ReleaseDate)].StringValue);
+			Assert.Equal("2022-3-1", carEntity.GetString(nameof(car.ReleaseDate)));
 		}
 		
 		[Fact]
@@ -557,8 +556,8 @@ namespace TableStorage.Abstractions.UnitTests
 			var propertyConverters = new PropertyConverters<Car> {
 				[nameof(car.ReleaseDate)] =
 					new(_ => 
-							new EntityProperty(car.ReleaseDate.ToString("yyyy-M-d")),
-						(c,p) =>c.ReleaseDate = DateTime.Parse(p.StringValue)
+							car.ReleaseDate.ToString("yyyy-M-d"),
+						(c,p) =>c.ReleaseDate = DateTime.Parse(p.ToString())
 					)
 			};
 
