@@ -15,6 +15,14 @@ This simple library seeks to take care of the mapping for us, so that you can co
 
 The library will convert simple properties to fields in Azure Table Storage.  Complex types will serialize as json.
 
+## :bangbang: Important Note About Versioning
+`TableStorage.Abstractions.TableEntityConverters` uses semantic versioning.  Anything changes to a major release should not be breaking, e.g. upgrading to 1.5 from 1.4 should not require a code change.
+
+The upgrade from 1.5 to 2.0 does not introduce changes needed in your use of `TableStorage.Abstractions.TableEntityConverters`, however the underlying table storage SDK is now using the newer [Azure.Data.Tables](https://www.nuget.org/packages/Azure.Data.Tables/) instead of the older [Microsoft.Azure.Cosmos.Table](https://www.nuget.org/packages/Microsoft.Azure.Cosmos.Table/) SDK.
+
+If you directly use Microsoft's Table Storage SDK, you will need to use `Azure.Data.Tables`.  It should not require much change, but nevertheless it is a change.  If you do not want to upgrade at this time, stick with `TableStorage.Abstractions.TableEntityConverters` 1.5.
+
+
 Examples
 ========
 We'll use the following two classes for our examples
@@ -144,8 +152,8 @@ property name and the value is a `PropertyConverter`, which specifies how to con
 var propertyConverters = new PropertyConverters<Car> {
     [nameof(Car.ReleaseDate)] =
         new PropertyConverter<Car>(x => 
-                new EntityProperty(car.ReleaseDate.ToString("yyyy-M-d")),
-            (c,p) =>c.ReleaseDate = DateTime.Parse(p.StringValue)
+                car.ReleaseDate.ToString("yyyy-M-d"),
+            (c,p) => c.ReleaseDate = p.ToString())
          )
 };
 ```

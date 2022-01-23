@@ -1,15 +1,14 @@
 ﻿using System;
 using System.Collections.Generic;
-using Microsoft.Azure.Cosmos.Table;
 
 namespace TableStorage.Abstractions.TableEntityConverters
 {
 	public class PropertyConverter<T>
 	{
-		public Func<T, EntityProperty> ToTableEntityProperty { get; }
-		public Action<T,EntityProperty> SetObjectProperty { get; }
+		public Func<T, object> ToTableEntityProperty { get; }
+		public Action<T, object> SetObjectProperty { get; }
 
-		public PropertyConverter(Func<T, EntityProperty> toTableEntityProperty, Action<T, EntityProperty> setObjectProperty)
+		public PropertyConverter(Func<T, object> toTableEntityProperty, Action<T, object> setObjectProperty)
 		{
 			ToTableEntityProperty = toTableEntityProperty;
 			SetObjectProperty = setObjectProperty;
