@@ -2,7 +2,7 @@
 [![Build status](https://ci.appveyor.com/api/projects/status/20rwpny4jfng24ws?svg=true)](https://ci.appveyor.com/project/giometrix/tablestorage-abstractions-tableentityconverters)
 [![NuGet](https://img.shields.io/nuget/v/TableStorage.Abstractions.TableEntityConverters.svg)](https://www.nuget.org/packages/TableStorage.Abstractions.TableEntityConverters/)
 [![Nuget Downloads](https://img.shields.io/nuget/dt/TableStorage.Abstractions.TableEntityConverters.svg?color=purple&logo=nuget)](https://www.nuget.org/packages/TableStorage.Abstractions.TableEntityConverters)
-[![Codacy Badge](https://api.codacy.com/project/badge/Grade/1dc6fc21b5b84de0a059ad3b527f2136)](https://www.codacy.com/manual/giometrix/TableStorage.Abstractions.TableEntityConverters?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=giometrix/TableStorage.Abstractions.TableEntityConverters&amp;utm_campaign=Badge_Grade)
+[![Codacy Badge](https://app.codacy.com/project/badge/Grade/1dc6fc21b5b84de0a059ad3b527f2136)](https://app.codacy.com/gh/giometrix/TableStorage.Abstractions.TableEntityConverters/dashboard?utm_source=gh&utm_medium=referral&utm_content=&utm_campaign=Badge_grade)
 
 Easily convert POCOs (Plain Old CLR Objects) to Azure Table Storage TableEntities and vice versa
 
