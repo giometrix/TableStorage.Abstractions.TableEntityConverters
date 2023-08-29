@@ -2,7 +2,7 @@
 
   <PropertyGroup>
     <TargetFrameworks>netstandard2.0</TargetFrameworks>
-    <Version>2.0.1.0</Version>
+    <Version>2.0.2.0</Version>
     <Authors>Giovanni Galbo</Authors>
     <Company>Giovanni Galbo</Company>
     <Description>Easily convert POCOs (Plain Old CLR Objects) to Azure Table Storage TableEntities and vice versa.</Description>
@@ -20,17 +20,17 @@
     <PublishRepositoryUrl>true</PublishRepositoryUrl>
     <IncludeSymbols>true</IncludeSymbols>
     <SymbolPackageFormat>snupkg</SymbolPackageFormat>
-    <AssemblyVersion>2.0.1.0</AssemblyVersion>
+    <AssemblyVersion>2.0.2.0</AssemblyVersion>
     <Nullable>disable</Nullable>
-    <PackageVersion>2.0.1.0</PackageVersion>
+    <PackageVersion>2.0.2.0</PackageVersion>
     <SignAssembly>False</SignAssembly>
     <PackageReadmeFile>README.md</PackageReadmeFile>
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Azure.Data.Tables" Version="12.5.0" />
+    <PackageReference Include="Azure.Data.Tables" Version="12.8.1" />
     <PackageReference Include="Microsoft.SourceLink.GitHub" Version="1.1.1" PrivateAssets="All" />
-    <PackageReference Include="Newtonsoft.Json" Version="13.0.1" />
+    <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
   </ItemGroup>
 
 
